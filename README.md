@@ -1,5 +1,6 @@
 # ecs-task-scheduled
 
+**module**
 ```
     module "ecs-task-scheduled" {
         source  = "nanusefue/ecs-task-scheduled/aws"
@@ -15,8 +16,7 @@
     }
 ```
 
-*tfvars*
-
+**tfvars**
 ```
     cluster_name        ="ecs-cluster-name"
     container_name      ="container-name"
