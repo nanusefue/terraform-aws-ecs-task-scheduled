@@ -15,7 +15,7 @@
     }
 ```
 
-* tfvars *
+*tfvars*
 
 ```
     cluster_name        ="ecs-cluster-name"
