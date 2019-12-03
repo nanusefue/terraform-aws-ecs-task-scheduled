@@ -9,10 +9,10 @@ variable "prefix" {
 }
 
 # TD task definitions
-variable "container_definitions" {
-  type        = string
-  description = "TD A list of valid container definitions provided as a single valid JSON document."
-}
+#variable "container_definitions" {
+#  type        = string
+#  description = "TD A list of valid container definitions provided as a single valid JSON document."
+#}
 
 variable "cpu" {
   default     = "256"
