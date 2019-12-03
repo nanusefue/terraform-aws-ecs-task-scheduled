@@ -56,7 +56,7 @@ variable "ecs_task_execution_role_arn" {
   description = "The ARN of the ECS Task Execution IAM Role."
 }
 
-variable "ecs_task_command" {}
-variable "taskname" {}
-variable "image" {}
-variable "awslogs_group" {}
+#variable "ecs_task_command" {}
+#variable "taskname" {}
+#variable "image" {}
+#variable "awslogs_group" {}
