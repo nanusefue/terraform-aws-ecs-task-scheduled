@@ -45,7 +45,7 @@ DOC
 # ECS Task Definitions # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html # https://www.terraform.io/docs/providers/aws/r/ecs_task_definition.html
 resource "aws_ecs_task_definition" "default" {
   #XEIC#count = "${var.enabled == true ? 1 : 0}"
-  count = "${length(var.crontabs)}"
+  #count = "${length(var.crontabs)}"
 
   # A unique name for your task definition.
   family = var.service
@@ -104,7 +104,7 @@ data "aws_region" "current" {
 
 # ECS Task Execution IAM Role # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_execution_IAM_role.html # https://www.terraform.io/docs/providers/aws/r/iam_role.html
 resource "aws_iam_role" "ecs_task_execution" {
-  #count = local.enabled_ecs_task_execution
+  count = local.enabled_ecs_task_execution
 
   name               = local.ecs_task_execution_iam_name
   assume_role_policy = data.aws_iam_policy_document.ecs_task_execution_assume_role_policy.json
