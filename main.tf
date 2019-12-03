@@ -92,7 +92,7 @@ data "template_file" "container_definitions_data" {
   count    = "${length(var.crontabs)}"
   template = file("policies/container_definitions.json")
   vars = {
-    command        = "${var.crontabs[count.index].ecs_task_command}"
+    command        = "${var.crontabs[count.index].command}"
     taskname       = "${var.crontabs[count.index].taskname}"
     image          = "${var.crontabs[count.index].image}"
     awslogs_region = data.aws_region.current.name
