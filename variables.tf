@@ -5,8 +5,6 @@ variable "rule_description" {}
 variable "crontabs" {}
 variable "service" {}
 variable "env" {}
-variable "prefix" {
-}
 
 # TD task definitions
 #variable "container_definitions" {
