@@ -42,8 +42,6 @@ input = <<DOC
 DOC
 }
 
-
-
 # ECS Task Definitions # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html # https://www.terraform.io/docs/providers/aws/r/ecs_task_definition.html
 resource "aws_ecs_task_definition" "default" {
   #XEIC#count = "${var.enabled == true ? 1 : 0}"
@@ -93,11 +91,11 @@ data "template_file" "container_definitions_data" {
   #count    = "${length(var.crontabs)}"
   template = file("policies/container_definitions.json")
   vars = {
-    command        = "${var.crontabs[count.index].command}"
-    taskname       = "${var.crontabs[count.index].task_definition}"
-    image          = "${var.crontabs[count.index].image}"
+    command        = "${var.crontabs[0].command}"
+    taskname       = "${var.crontabs[0].task_definition}"
+    image          = "${var.crontabs[0].image}"
     awslogs_region = data.aws_region.current.name
-    awslogs_group  = "${var.crontabs[count.index].awslogs_group}"
+    awslogs_group  = "${var.crontabs[0].awslogs_group}"
   }
 }
 
