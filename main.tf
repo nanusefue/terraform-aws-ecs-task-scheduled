@@ -19,8 +19,8 @@ resource "aws_cloudwatch_event_rule" "scheduled_task" {
 }
 
 resource "aws_cloudwatch_event_target" "scheduled_task" {
-  count = "${length(var.crontabs)}"
-  target_id ="${var.crontabs[count.index].rule_name}-${var.crontabs[count.index]}"
+  count     = "${length(var.crontabs)}"
+  target_id = "${var.crontabs[count.index].rule_name}-${var.crontabs[count.index].event_target_id}"
   rule      = "${aws_cloudwatch_event_rule.scheduled_task[count.index].name}"
   arn       = "${data.aws_ecs_cluster.cluster.arn}"
   role_arn  = "${data.aws_iam_role.ec2Role.arn}"
