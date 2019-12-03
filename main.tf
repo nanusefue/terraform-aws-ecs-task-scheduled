@@ -27,7 +27,7 @@ resource "aws_cloudwatch_event_target" "scheduled_task" {
   ecs_target {
     task_count          = "1"
     #XEIC#task_definition_arn = "${data.aws_ecs_task_definition.service[count.index].id}"
-    task_definition_arn = aws_ecs_task_definition.default[0].arn
+    task_definition_arn = aws_ecs_task_definition.default[count.index].arn
   }
 
 input = <<DOC
@@ -45,7 +45,7 @@ DOC
 # ECS Task Definitions # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html # https://www.terraform.io/docs/providers/aws/r/ecs_task_definition.html
 resource "aws_ecs_task_definition" "default" {
   #XEIC#count = "${var.enabled == true ? 1 : 0}"
-  #count = "${length(var.crontabs)}"
+  count = "${length(var.crontabs)}"
 
   # A unique name for your task definition.
   family = var.service
@@ -88,14 +88,14 @@ resource "aws_ecs_task_definition" "default" {
 }
 
 data "template_file" "container_definitions_data" {
-  #count    = "${length(var.crontabs)}"
+  count    = "${length(var.crontabs)}"
   template = file("policies/container_definitions.json")
   vars = {
-    command        = "${var.crontabs[0].command}"
-    taskname       = "${var.crontabs[0].task_definition}"
-    image          = "${var.crontabs[0].image}"
+    command        = "${var.crontabs[count.index].command}"
+    taskname       = "${var.crontabs[count.index].task_definition}"
+    image          = "${var.crontabs[count.index].image}"
     awslogs_region = data.aws_region.current.name
-    awslogs_group  = "${var.crontabs[0].awslogs_group}"
+    awslogs_group  = "${var.crontabs[count.index].awslogs_group}"
   }
 }
 
