@@ -13,7 +13,7 @@ data "aws_iam_role" "ec2Role" {
 
 resource "aws_cloudwatch_event_rule" "scheduled_task" {
   count = "${length(var.crontabs)}"
-  name                 = "${var.env}-{var.service}-${var.crontabs[count.index].rule_name}" #ec2_scheduled_task"
+  name                 = "${var.env}-${var.service}-${var.crontabs[count.index].rule_name}" #ec2_scheduled_task"
   description          = "${var.rule_description} ${var.service} ${var.crontabs[count.index].rule_name} ${var.env}"
   schedule_expression  = "${var.crontabs[count.index].schedule_expression}"
 }
