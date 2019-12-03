@@ -57,7 +57,8 @@ resource "aws_ecs_task_definition" "default" {
 
   # A list of container definitions in JSON format that describe the different containers that make up your task.
   # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html#container_definitions
-  container_definitions = "${element(data.template_file.container_definitions_data.*.rendered, count.index)}"
+  #container_definitions = "${element(data.template_file.container_definitions_data.*.rendered, count.index)}"
+  container_definitions = "${data.template_file.container_definitions_data.rendered}"
 
   # The number of CPU units used by the task.
   # It can be expressed as an integer using CPU units, for example 1024, or as a string using vCPUs, for example 1 vCPU or 1 vcpu.
@@ -89,7 +90,7 @@ resource "aws_ecs_task_definition" "default" {
 }
 
 data "template_file" "container_definitions_data" {
-  count    = "${length(var.crontabs)}"
+  #count    = "${length(var.crontabs)}"
   template = file("policies/container_definitions.json")
   vars = {
     command        = "${var.crontabs[count.index].command}"
@@ -105,7 +106,7 @@ data "aws_region" "current" {
 
 # ECS Task Execution IAM Role # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_execution_IAM_role.html # https://www.terraform.io/docs/providers/aws/r/iam_role.html
 resource "aws_iam_role" "ecs_task_execution" {
-  count = local.enabled_ecs_task_execution
+  #count = local.enabled_ecs_task_execution
 
   name               = local.ecs_task_execution_iam_name
   assume_role_policy = data.aws_iam_policy_document.ecs_task_execution_assume_role_policy.json
@@ -156,6 +157,3 @@ locals {
 data "aws_iam_policy" "ecs_task_execution" {
   arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
-
-
-
