@@ -14,10 +14,10 @@ variable "prefix" {
 #  description = "TD A list of valid container definitions provided as a single valid JSON document."
 #}
 
-variable "event_target_id" {
-  default = "exec"
-  type    = string
-}
+#variable "event_target_id" {
+#  default = ""
+#  type    = string
+#}
 
 variable "cpu" {
   default     = "256"
