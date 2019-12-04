@@ -139,6 +139,8 @@ resource "aws_iam_role" "ecs_task_execution" {
 }
 
 data "aws_iam_policy_document" "ecs_task_execution_assume_role_policy" {
+  count    = "${length(var.crontabs)}"
+
   statement {
     actions = ["sts:AssumeRole"]
 
