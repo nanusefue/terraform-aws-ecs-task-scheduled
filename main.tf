@@ -14,7 +14,7 @@ data "aws_iam_role" "ec2Role" {
 resource "aws_cloudwatch_event_rule" "scheduled_task" {
   count = "${length(var.crontabs)}"
   name                 = "${var.env}-${var.service}-${var.crontabs[count.index].rule_name}" #ec2_scheduled_task"
-  description          = "${var.rule_description} ${var.service} ${var.crontabs[count.index].rule_name} ${var.env}"
+  description          = "${var.env} ${var.rule_description} ${var.service} ${var.crontabs[count.index].rule_name}"
   schedule_expression  = "${var.crontabs[count.index].schedule_expression}"
 }
 
@@ -67,11 +67,10 @@ resource "aws_cloudwatch_event_target" "scheduled_task" {
 
 # ECS Task Definitions # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html # https://www.terraform.io/docs/providers/aws/r/ecs_task_definition.html
 resource "aws_ecs_task_definition" "default" {
-  #XEIC#count = "${var.enabled == true ? 1 : 0}"
   count = "${length(var.crontabs)}"
 
   # A unique name for your task definition.
-  family = var.service
+  family = "${var.env}-${var.service}-${var.crontabs[count.index].rule_name}" #ec2_scheduled_task"
 
   # The ARN of the task execution role that the Amazon ECS container agent and the Docker daemon can assume.
   execution_role_arn = var.create_ecs_task_execution_role ? join("", aws_iam_role.ecs_task_execution.*.arn) : var.ecs_task_execution_role_arn
@@ -79,8 +78,6 @@ resource "aws_ecs_task_definition" "default" {
   # A list of container definitions in JSON format that describe the different containers that make up your task.
   # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html#container_definitions
   container_definitions = "${element(data.template_file.container_definitions_data.*.rendered, count.index)}"
-  #container_definitions = "${data.template_file.container_definitions_data.rendered}"
-  #container_definitions = "${file("policies/default_container_definitions.json")}"
 
   # The number of CPU units used by the task.
   # It can be expressed as an integer using CPU units, for example 1024, or as a string using vCPUs, for example 1 vCPU or 1 vcpu.
@@ -172,7 +169,7 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution" {
 }
 
 locals {
-  ecs_task_execution_iam_name = "${var.service}-ecs-task-execution"
+  ecs_task_execution_iam_name = "${var.env}-${var.service}-ecs-task-execution"
   enabled_ecs_task_execution  = var.enabled && var.create_ecs_task_execution_role ? 1 : 0
 }
 
