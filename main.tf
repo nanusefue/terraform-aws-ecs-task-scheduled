@@ -130,12 +130,12 @@ resource "aws_iam_role" "ecs_task_execution" {
   assume_role_policy = data.aws_iam_policy_document.ecs_task_execution_assume_role_policy.json
   path               = var.iam_path
   description        = var.description
-  tags = merge(
-    {
-      "Name" = "${var.crontabs[count.index].taskname}-ecs-task-execution"
-    },
-    var.tags,
-  )
+  #tags = merge(
+  #  {
+  #    "Name" = "${var.crontabs[count.index].taskname}-ecs-task-execution"
+  #  },
+  #  var.tags,
+  #)
 }
 
 data "aws_iam_policy_document" "ecs_task_execution_assume_role_policy" {
@@ -152,7 +152,6 @@ data "aws_iam_policy_document" "ecs_task_execution_assume_role_policy" {
 # https://www.terraform.io/docs/providers/aws/r/iam_policy.html
 resource "aws_iam_policy" "ecs_task_execution" {
   count    = "${length(var.crontabs)}"
-
 
   name        = "${var.crontabs[count.index].taskname}-ecs-task-execution"
   policy      = data.aws_iam_policy.ecs_task_execution.policy
