@@ -25,9 +25,15 @@ resource "aws_cloudwatch_event_target" "scheduled_task" {
   arn       = "${data.aws_ecs_cluster.cluster.arn}"
   role_arn  = "${data.aws_iam_role.ec2Role.arn}"
   ecs_target {
-    task_count          = "1"
+    launch_type         = "FARGATE"
+    task_count          = var.task_count
     #XEIC#task_definition_arn = "${data.aws_ecs_task_definition.service[count.index].id}"
     task_definition_arn = aws_ecs_task_definition.default[count.index].arn
+
+    # Specifies the platform version for the task. Specify only the numeric portion of the platform version, such as 1.1.0.
+    # This structure is used only if LaunchType is FARGATE.
+    # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/platform_versions.html
+    platform_version = var.platform_version
   }
 
 #input = <<DOC

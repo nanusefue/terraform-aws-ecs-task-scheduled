@@ -17,6 +17,18 @@ variable "env" {}
 #  type    = string
 #}
 
+variable "task_count" {
+  default     = 1
+  type        = string
+  description = "The number of tasks to create based on the TaskDefinition."
+}
+
+variable "platform_version" {
+  default     = "LATEST"
+  type        = string
+  description = "Specifies the platform version for the task."
+}
+
 variable "cpu" {
   default     = "256"
   type        = string
