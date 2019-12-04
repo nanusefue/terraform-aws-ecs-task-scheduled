@@ -127,7 +127,7 @@ resource "aws_iam_role" "ecs_task_execution" {
   count    = "${length(var.crontabs)}"
 
   name               = "${var.crontabs[count.index].taskname}"
-  assume_role_policy = data.aws_iam_policy_document.ecs_task_execution_assume_role_policy.json
+  assume_role_policy = data.aws_iam_policy_document.ecs_task_execution_assume_role_policy[count.index].json
   path               = var.iam_path
   description        = var.description
   #tags = merge(
