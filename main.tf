@@ -156,7 +156,7 @@ resource "aws_iam_policy" "ecs_task_execution" {
   count    = "${length(var.crontabs)}"
 
   name        = "${var.crontabs[count.index].taskname}"
-  policy      = data.aws_iam_policy.ecs_task_execution.policy
+  policy      = data.aws_iam_policy.ecs_task_execution[count.index].policy
   path        = var.iam_path
   description = var.description
 }
