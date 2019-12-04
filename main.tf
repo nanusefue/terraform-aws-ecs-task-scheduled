@@ -124,15 +124,15 @@ data "aws_region" "current" {
 
 # ECS Task Execution IAM Role # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_execution_IAM_role.html # https://www.terraform.io/docs/providers/aws/r/iam_role.html
 resource "aws_iam_role" "ecs_task_execution" {
-  count = local.enabled_ecs_task_execution
+  count    = "${length(var.crontabs)}"
 
-  name               = local.ecs_task_execution_iam_name
+  name               = "${var.crontabs[count.index].taskname}-ecs-task-execution"
   assume_role_policy = data.aws_iam_policy_document.ecs_task_execution_assume_role_policy.json
   path               = var.iam_path
   description        = var.description
   tags = merge(
     {
-      "Name" = local.ecs_task_execution_iam_name
+      "Name" = "${var.crontabs[count.index].taskname}-ecs-task-execution"
     },
     var.tags,
   )
@@ -151,9 +151,10 @@ data "aws_iam_policy_document" "ecs_task_execution_assume_role_policy" {
 
 # https://www.terraform.io/docs/providers/aws/r/iam_policy.html
 resource "aws_iam_policy" "ecs_task_execution" {
-  count = local.enabled_ecs_task_execution
+  count    = "${length(var.crontabs)}"
 
-  name        = local.ecs_task_execution_iam_name
+
+  name        = "${var.crontabs[count.index].taskname}-ecs-task-execution"
   policy      = data.aws_iam_policy.ecs_task_execution.policy
   path        = var.iam_path
   description = var.description
@@ -168,8 +169,6 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution" {
 }
 
 locals {
-  count    = "${length(var.crontabs)}"
-  ecs_task_execution_iam_name = "${var.crontabs[count.index].taskname}-ecs-task-execution"
   enabled_ecs_task_execution  = var.enabled && var.create_ecs_task_execution_role ? 1 : 0
 }
 
