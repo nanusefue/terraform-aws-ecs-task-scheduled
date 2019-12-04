@@ -126,7 +126,7 @@ data "aws_region" "current" {
 resource "aws_iam_role" "ecs_task_execution" {
   count    = "${length(var.crontabs)}"
 
-  name               = "${var.crontabs[count.index].taskname}-ecs-task-execution1"
+  name               = "${var.crontabs[count.index].taskname}"
   assume_role_policy = data.aws_iam_policy_document.ecs_task_execution_assume_role_policy.json
   path               = var.iam_path
   description        = var.description
@@ -153,7 +153,7 @@ data "aws_iam_policy_document" "ecs_task_execution_assume_role_policy" {
 resource "aws_iam_policy" "ecs_task_execution" {
   count    = "${length(var.crontabs)}"
 
-  name        = "${var.crontabs[count.index].taskname}-ecs-task-execution2"
+  name        = "${var.crontabs[count.index].taskname}"
   policy      = data.aws_iam_policy.ecs_task_execution.policy
   path        = var.iam_path
   description = var.description
