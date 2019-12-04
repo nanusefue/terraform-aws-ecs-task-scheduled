@@ -13,8 +13,8 @@ data "aws_iam_role" "ec2Role" {
 
 resource "aws_cloudwatch_event_rule" "scheduled_task" {
   count = "${length(var.crontabs)}"
-  name                 = "${var.env}-${var.service}-${var.crontabs[count.index].taskname}" #ec2_scheduled_task"
-  description          = "${var.env} ${var.rule_description} ${var.service} ${var.crontabs[count.index].taskname}"
+  name                 = "${var.crontabs[count.index].taskname}" #ec2_scheduled_task"
+  description          = "${var.rule_description} ${var.crontabs[count.index].taskname}"
   schedule_expression  = "${var.crontabs[count.index].schedule_expression}"
 }
 
@@ -27,7 +27,6 @@ resource "aws_cloudwatch_event_target" "scheduled_task" {
   ecs_target {
     launch_type         = "FARGATE"
     task_count          = var.task_count
-    #XEIC#task_definition_arn = "${data.aws_ecs_task_definition.service[count.index].id}"
     task_definition_arn = aws_ecs_task_definition.default[count.index].arn
 
     # Specifies the platform version for the task. Specify only the numeric portion of the platform version, such as 1.1.0.
@@ -70,7 +69,7 @@ resource "aws_ecs_task_definition" "default" {
   count = "${length(var.crontabs)}"
 
   # A unique name for your task definition.
-  family = "${var.env}-${var.service}-${var.crontabs[count.index].taskname}" #ec2_scheduled_task"
+  family = "${var.crontabs[count.index].taskname}" #ec2_scheduled_task"
 
   # The ARN of the task execution role that the Amazon ECS container agent and the Docker daemon can assume.
   execution_role_arn = var.create_ecs_task_execution_role ? join("", aws_iam_role.ecs_task_execution.*.arn) : var.ecs_task_execution_role_arn
@@ -102,7 +101,7 @@ resource "aws_ecs_task_definition" "default" {
   # A mapping of tags to assign to the resource.
   tags = merge(
     {
-      "Name" = var.service
+      "Name" = var.taskname
     },
     var.tags,
   )
@@ -169,7 +168,7 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution" {
 }
 
 locals {
-  ecs_task_execution_iam_name = "${var.env}-${var.service}-ecs-task-execution"
+  ecs_task_execution_iam_name = "${var.taskname}-ecs-task-execution"
   enabled_ecs_task_execution  = var.enabled && var.create_ecs_task_execution_role ? 1 : 0
 }
 
