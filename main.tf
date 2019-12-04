@@ -101,7 +101,7 @@ resource "aws_ecs_task_definition" "default" {
   # A mapping of tags to assign to the resource.
   tags = merge(
     {
-      "Name" = var.taskname
+      "Name" = "${var.crontabs[count.index].taskname}"
     },
     var.tags,
   )
@@ -168,7 +168,8 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution" {
 }
 
 locals {
-  ecs_task_execution_iam_name = "${var.taskname}-ecs-task-execution"
+  count    = "${length(var.crontabs)}"
+  ecs_task_execution_iam_name = "${var.crontabs[count.index].taskname}-ecs-task-execution"
   enabled_ecs_task_execution  = var.enabled && var.create_ecs_task_execution_role ? 1 : 0
 }
 
