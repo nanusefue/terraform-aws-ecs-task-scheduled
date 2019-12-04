@@ -34,12 +34,6 @@ variable "platform_version" {
   description = "Specifies the platform version for the task."
 }
 
-variable "platform_version" {
-  default     = "LATEST"
-  type        = string
-  description = "Specifies the platform version for the task."
-}
-
 variable "assign_public_ip" {
   default     = false
   type        = string
