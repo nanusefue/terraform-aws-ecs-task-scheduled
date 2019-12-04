@@ -1,0 +1,16 @@
+[
+  {
+    "name": "test001",
+    "image": "072182941009.dkr.ecr.us-east-1.amazonaws.com/stg-b2bapi:cons-b6b02627",
+    "essential": true,
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-region": "us-east-1",
+        "awslogs-stream-prefix": "date",
+        "awslogs-group": "/ecs-scheduled-task/stg-exec-b2bapi"
+      }
+    },
+    "command" : ["php","app/console"]
+  }
+]

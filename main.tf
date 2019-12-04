@@ -55,8 +55,9 @@ resource "aws_ecs_task_definition" "default" {
 
   # A list of container definitions in JSON format that describe the different containers that make up your task.
   # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html#container_definitions
-  container_definitions = "${element(data.template_file.container_definitions_data.*.rendered, count.index)}"
+  #container_definitions = "${element(data.template_file.container_definitions_data.*.rendered, count.index)}"
   #container_definitions = "${data.template_file.container_definitions_data.rendered}"
+  container_definitions = "${file("policies/default_container_definitions.json")}"
 
   # The number of CPU units used by the task.
   # It can be expressed as an integer using CPU units, for example 1024, or as a string using vCPUs, for example 1 vCPU or 1 vcpu.
