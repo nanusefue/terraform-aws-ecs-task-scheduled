@@ -36,6 +36,34 @@ resource "aws_cloudwatch_event_target" "scheduled_task" {
     platform_version = var.platform_version
   }
 
+  ecs_target {
+    launch_type         = "FARGATE"
+    task_count          = var.task_count
+    task_definition_arn = aws_ecs_task_definition.default[0].arn
+
+    # Specifies the platform version for the task. Specify only the numeric portion of the platform version, such as 1.1.0.
+    # This structure is used only if LaunchType is FARGATE.
+    # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/platform_versions.html
+    platform_version = var.platform_version
+
+    # This structure specifies the VPC subnets and security groups for the task, and whether a public IP address is to be used.
+    # This structure is relevant only for ECS tasks that use the awsvpc network mode.
+    # https://docs.aws.amazon.com/AmazonCloudWatchEvents/latest/APIReference/API_AwsVpcConfiguration.html
+    network_configuration {
+      assign_public_ip = var.assign_public_ip
+
+      # Specifies the security groups associated with the task. These security groups must all be in the same VPC.
+      # You can specify as many as five security groups. If you do not specify a security group,
+      # the default security group for the VPC is used.
+      security_groups = var.security_groups
+
+      # Specifies the subnets associated with the task. These subnets must all be in the same VPC.
+      # You can specify as many as 16 subnets.
+      subnets = var.subnets
+    }
+  }
+
+
 #input = <<DOC
 #{
 #  "containerOverrides": [

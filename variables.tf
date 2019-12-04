@@ -23,10 +23,33 @@ variable "task_count" {
   description = "The number of tasks to create based on the TaskDefinition."
 }
 
+variable "subnets" {
+  type        = list(string)
+  description = "The subnets associated with the task or service."
+}
+
 variable "platform_version" {
   default     = "LATEST"
   type        = string
   description = "Specifies the platform version for the task."
+}
+
+variable "platform_version" {
+  default     = "LATEST"
+  type        = string
+  description = "Specifies the platform version for the task."
+}
+
+variable "assign_public_ip" {
+  default     = false
+  type        = string
+  description = "Assign a public IP address to the ENI (Fargate launch type only)."
+}
+
+variable "security_groups" {
+  default     = []
+  type        = list(string)
+  description = "The security groups associated with the task or service."
 }
 
 variable "cpu" {
