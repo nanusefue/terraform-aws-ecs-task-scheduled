@@ -72,7 +72,9 @@ resource "aws_ecs_task_definition" "default" {
   family = "${var.crontabs[count.index].taskname}" #ec2_scheduled_task"
 
   # The ARN of the task execution role that the Amazon ECS container agent and the Docker daemon can assume.
-  execution_role_arn = var.create_ecs_task_execution_role ? join("", aws_iam_role.ecs_task_execution.*.arn) : var.ecs_task_execution_role_arn
+  #execution_role_arn = var.create_ecs_task_execution_role ? join("", aws_iam_role.ecs_task_execution.*.arn) : var.ecs_task_execution_role_arn
+  execution_role_arn = "${element(aws_iam_role.ecs_task_execution.*.arn, count.index)}"
+
 
   # A list of container definitions in JSON format that describe the different containers that make up your task.
   # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html#container_definitions
