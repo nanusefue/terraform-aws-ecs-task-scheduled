@@ -127,10 +127,7 @@ resource "aws_iam_role" "ecs_task_execution" {
   count    = "${length(var.crontabs)}"
 
   name               = "${var.crontabs[count.index].taskname}"
-  #assume_role_policy =            data.aws_iam_policy_document.ecs_task_execution_assume_role_policy.json
-  assume_role_policy = "${element(data.aws_iam_policy_document.ecs_task_execution_assume_role_policy.*,count.index)}.json"
-  container_definitions = "${element(data.template_file.container_definitions_data.*.rendered, count.index)}"
-
+  assume_role_policy = "${element(data.aws_iam_policy_document.ecs_task_execution_assume_role_policy.*.json,count.index)}"
 
   path               = var.iam_path
   description        = var.description
@@ -160,7 +157,7 @@ resource "aws_iam_policy" "ecs_task_execution" {
   count    = "${length(var.crontabs)}"
 
   name        = "${var.crontabs[count.index].taskname}"
-  policy      = data.aws_iam_policy.ecs_task_execution[count.index].policy
+  policy      = "${element(data.aws_iam_policy.ecs_task_execution.*.policy,count.index)}"
   path        = var.iam_path
   description = var.description
 }
