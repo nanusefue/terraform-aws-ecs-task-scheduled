@@ -13,14 +13,14 @@ data "aws_iam_role" "ec2Role" {
 
 resource "aws_cloudwatch_event_rule" "scheduled_task" {
   count = "${length(var.crontabs)}"
-  name                 = "${var.env}-${var.service}-${var.crontabs[count.index].rule_name}" #ec2_scheduled_task"
-  description          = "${var.env} ${var.rule_description} ${var.service} ${var.crontabs[count.index].rule_name}"
+  name                 = "${var.env}-${var.service}-${var.crontabs[count.index].taskname}" #ec2_scheduled_task"
+  description          = "${var.env} ${var.rule_description} ${var.service} ${var.crontabs[count.index].taskname}"
   schedule_expression  = "${var.crontabs[count.index].schedule_expression}"
 }
 
 resource "aws_cloudwatch_event_target" "scheduled_task" {
   count     = "${length(var.crontabs)}"
-  target_id = "${var.crontabs[count.index].rule_name}-${var.crontabs[count.index].event_target_id}"
+  target_id = "${var.crontabs[count.index].taskname}-${var.crontabs[count.index].event_target_id}"
   rule      = "${aws_cloudwatch_event_rule.scheduled_task[count.index].name}"
   arn       = "${data.aws_ecs_cluster.cluster.arn}"
   role_arn  = "${data.aws_iam_role.ec2Role.arn}"
@@ -70,7 +70,7 @@ resource "aws_ecs_task_definition" "default" {
   count = "${length(var.crontabs)}"
 
   # A unique name for your task definition.
-  family = "${var.env}-${var.service}-${var.crontabs[count.index].rule_name}" #ec2_scheduled_task"
+  family = "${var.env}-${var.service}-${var.crontabs[count.index].taskname}" #ec2_scheduled_task"
 
   # The ARN of the task execution role that the Amazon ECS container agent and the Docker daemon can assume.
   execution_role_arn = var.create_ecs_task_execution_role ? join("", aws_iam_role.ecs_task_execution.*.arn) : var.ecs_task_execution_role_arn
@@ -113,7 +113,7 @@ data "template_file" "container_definitions_data" {
   template = file("policies/container_definitions.json")
   vars = {
     command        = "${var.crontabs[count.index].command}"
-    taskname       = "${var.crontabs[count.index].task_definition}"
+    taskname       = "${var.crontabs[count.index].taskname}"
     image          = "${var.crontabs[count.index].image}"
     awslogs_region = data.aws_region.current.name
     awslogs_group  = "${var.crontabs[count.index].awslogs_group}"
